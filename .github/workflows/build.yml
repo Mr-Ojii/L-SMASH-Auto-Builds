@@ -1,0 +1,176 @@
+name: Build L-SMASH
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url:  ${{ steps.create_release.outputs.upload_url }}
+    steps:
+    - name: Get Date
+      id: get_date
+      run: |
+        DATE_TIME=`date +'%Y-%m-%d-%H-%M-%S'`
+        echo "::set-output name=DATE_TIME::${DATE_TIME}"
+    - name: Create a Release
+      id: create_release
+      uses: actions/create-release@v1
+      env: 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: build-${{ steps.get_date.outputs.DATE_TIME }}
+        release_name: Build-${{ steps.get_date.outputs.DATE_TIME }}
+        draft: false
+        prerelease: false
+
+
+  win-build:
+    needs: create_release
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        config: 
+          - { arch: i686, x: x86 }
+          - { arch: x86_64, x: x64 }
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Checkout L-SMASH repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: l-smash/l-smash
+        path: l-smash
+    - name: Set REV_LIST_COUNT
+      id: rev
+      run: |
+        cd ${{ github.workspace }}/l-smash
+        REVCOUNT=`git rev-list --count HEAD`
+        echo "::set-output name=REV_LIST_COUNT::${REVCOUNT}"
+    - name: move LICENSE file
+      run: |
+        cd ${{ github.workspace }}/l-smash
+        mv LICENSE cli
+    - name: Install mingw-w64
+      run: sudo apt install mingw-w64
+    - name: Build
+      run: |
+        cd ${{ github.workspace }}/l-smash
+        ./configure --cross-prefix=${{ matrix.config.arch }}-w64-mingw32-
+        make
+    - name: Create archive
+      run: |
+        cd ${{ github.workspace }}/l-smash/cli
+        zip L-SMASH-Release LICENSE muxer.exe remuxer.exe boxdumper.exe timelineeditor.exe
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: ./l-smash/cli/L-SMASH-Release.zip
+        
+        asset_name: L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.x }}.zip
+        asset_content_type: application/zip
+
+
+  linux-build:
+    needs: create_release
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        config: 
+          - { arch: -m32, x: x86 }
+          - { arch: -m64, x: x64 }
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Checkout L-SMASH repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: l-smash/l-smash
+        path: l-smash
+    - name: Set REV_LIST_COUNT
+      id: rev
+      run: |
+        cd ${{ github.workspace }}/l-smash
+        REVCOUNT=`git rev-list --count HEAD`
+        echo "::set-output name=REV_LIST_COUNT::${REVCOUNT}"
+    - name: move LICENSE file
+      run: |
+        cd ${{ github.workspace }}/l-smash
+        mv LICENSE cli
+    - name: Install multilib
+      run: sudo apt install gcc-multilib
+    - name: Build
+      run: |
+        cd ${{ github.workspace }}/l-smash
+        ./configure --extra-cflags=${{ matrix.config.arch }}
+        make
+    - name: Create archive
+      run: |
+        cd ${{ github.workspace }}/l-smash/cli
+        zip L-SMASH-Release LICENSE muxer remuxer boxdumper timelineeditor
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: ./l-smash/cli/L-SMASH-Release.zip
+        asset_name: L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.x }}.zip
+        asset_content_type: application/zip
+
+
+  mac-build:
+    needs: create_release
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Checkout L-SMASH repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: l-smash/l-smash
+        path: l-smash
+    - name: Set REV_LIST_COUNT
+      id: rev
+      run: |
+        cd ${{ github.workspace }}/l-smash
+        REVCOUNT=`git rev-list --count HEAD`
+        echo "::set-output name=REV_LIST_COUNT::${REVCOUNT}"
+    - name: move LICENSE file
+      run: |
+        cd ${{ github.workspace }}/l-smash
+        mv LICENSE cli
+    - name: Build
+      run: |
+        cd ${{ github.workspace }}/l-smash
+        make
+    - name: Create archive
+      run: |
+        cd ${{ github.workspace }}/l-smash/cli
+        zip L-SMASH-Release LICENSE muxer remuxer boxdumper timelineeditor
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: ./l-smash/cli/L-SMASH-Release.zip
+        asset_name: L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64.zip
+        asset_content_type: application/zip
