@@ -8,31 +8,7 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  create_release:
-    name: Create release
-    runs-on: ubuntu-latest
-    outputs:
-      upload_url:  ${{ steps.create_release.outputs.upload_url }}
-    steps:
-    - name: Get Date
-      id: get_date
-      run: |
-        DATE_TIME=`date +'%Y-%m-%d-%H-%M-%S'`
-        echo "::set-output name=DATE_TIME::${DATE_TIME}"
-    - name: Create a Release
-      id: create_release
-      uses: actions/create-release@v1
-      env: 
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: build-${{ steps.get_date.outputs.DATE_TIME }}
-        release_name: Build-${{ steps.get_date.outputs.DATE_TIME }}
-        draft: false
-        prerelease: false
-
-
   win-build:
-    needs: create_release
     runs-on: ubuntu-latest
     
     strategy:
@@ -70,21 +46,15 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH-Release LICENSE muxer.exe remuxer.exe boxdumper.exe timelineeditor.exe
-    - name: Upload release asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: ./l-smash/cli/L-SMASH-Release.zip
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }} LICENSE muxer.exe remuxer.exe boxdumper.exe timelineeditor.exe
         
-        asset_name: L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}.zip
-        asset_content_type: application/zip
-
-
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: l-smash
+        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}.zip
+    
   linux-build:
-    needs: create_release
     runs-on: ubuntu-latest
     
     strategy:
@@ -122,20 +92,15 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH-Release LICENSE muxer remuxer boxdumper timelineeditor
-    - name: Upload release asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }} LICENSE muxer remuxer boxdumper timelineeditor
+    
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
       with:
-        upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: ./l-smash/cli/L-SMASH-Release.zip
-        asset_name: L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}.zip
-        asset_content_type: application/zip
-
+        name: l-smash
+        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}.zip
 
   mac-build:
-    needs: create_release
     runs-on: macos-latest
     
     steps:
@@ -164,13 +129,43 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH-Release LICENSE muxer remuxer boxdumper timelineeditor
-    - name: Upload release asset
-      uses: actions/upload-release-asset@v1
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64 LICENSE muxer remuxer boxdumper timelineeditor
+        
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: l-smash
+        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64.zip
+      
+      
+  create_release:
+    name: Create release
+    needs: [linux-build,win-build,mac-build]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    - uses: actions/download-artifact@v2
+      with:
+        name: l-smash
+        path: artifacts
+    
+    - name: Get Date
+      id: get_date
+      run: |
+        DATE_TIME=`date +'%Y-%m-%d-%H-%M-%S'`
+        echo "::set-output name=DATE_TIME::${DATE_TIME}"
+
+    # https://gist.github.com/superbrothers/af84a2f8af394a62352e06537a640746        
+    - name: Create a Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: ./l-smash/cli/L-SMASH-Release.zip
-        asset_name: L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64.zip
-        asset_content_type: application/zip
+      run: |
+        RELEASE_NAME=Build-${{ steps.get_date.outputs.DATE_TIME }}
+        TAG_NAME=build-${{ steps.get_date.outputs.DATE_TIME }}
+        assets=()
+        for asset in ${{ github.workspace }}/artifacts/*.zip; do
+          assets+=("-a" "$asset")
+        done
+        hub release create "${assets[@]}" -m "$RELEASE_NAME" "$TAG_NAME"
