@@ -83,7 +83,9 @@ jobs:
         cd ${{ github.workspace }}/l-smash
         mv LICENSE cli
     - name: Install multilib
-      run: sudo apt install gcc-multilib
+      run: |
+        sudo apt update
+        sudo apt install gcc-multilib
     - name: Build
       run: |
         cd ${{ github.workspace }}/l-smash
