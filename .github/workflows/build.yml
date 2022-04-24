@@ -63,6 +63,7 @@ jobs:
         config: 
           - { option: -m32, arch: x86 }
           - { option: -m64, arch: x64 }
+        author: [l-smash, Mr-Ojii]
     
     steps:
     - name: Checkout repository
@@ -105,6 +106,10 @@ jobs:
 
   mac-build:
     runs-on: macos-latest
+    
+    strategy:
+      matrix:
+        author: [l-smash, Mr-Ojii]
     
     steps:
     - name: Checkout repository
