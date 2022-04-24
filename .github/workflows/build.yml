@@ -16,6 +16,7 @@ jobs:
         config: 
           - { cpu: i686, arch: x86 }
           - { cpu: x86_64, arch: x64 }
+        author: [l-smash, Mr-Ojii]
     
     steps:
     - name: Checkout repository
@@ -24,7 +25,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-        repository: l-smash/l-smash
+        repository: ${{ matrix.author }}/l-smash
         path: l-smash
     - name: Set REV_LIST_COUNT
       id: rev
@@ -46,13 +47,13 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }} LICENSE muxer.exe remuxer.exe boxdumper.exe timelineeditor.exe
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}_${{ matrix.author }} LICENSE muxer.exe remuxer.exe boxdumper.exe timelineeditor.exe
         
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: l-smash
-        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}.zip
+        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}_${{ matrix.author }}.zip
     
   linux-build:
     runs-on: ubuntu-latest
@@ -70,7 +71,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-        repository: l-smash/l-smash
+        repository: ${{ matrix.author }}/l-smash
         path: l-smash
     - name: Set REV_LIST_COUNT
       id: rev
@@ -94,13 +95,13 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }} LICENSE muxer remuxer boxdumper timelineeditor
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}_${{ matrix.author }} LICENSE muxer remuxer boxdumper timelineeditor
     
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: l-smash
-        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}.zip
+        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}_${{ matrix.author }}.zip
 
   mac-build:
     runs-on: macos-latest
@@ -112,7 +113,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-        repository: l-smash/l-smash
+        repository: ${{ matrix.author }}/l-smash
         path: l-smash
     - name: Set REV_LIST_COUNT
       id: rev
@@ -131,13 +132,13 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64 LICENSE muxer remuxer boxdumper timelineeditor
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64_${{ matrix.author }} LICENSE muxer remuxer boxdumper timelineeditor
         
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: l-smash
-        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64.zip
+        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64_${{ matrix.author }}.zip
       
       
   create_release:
