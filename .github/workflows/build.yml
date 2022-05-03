@@ -16,7 +16,7 @@ jobs:
         config: 
           - { cpu: i686, arch: x86 }
           - { cpu: x86_64, arch: x64 }
-        author: [l-smash, Mr-Ojii]
+        author: [l-smash, Mr-Ojii, vimeo]
     
     steps:
     - name: Checkout repository
@@ -63,7 +63,7 @@ jobs:
         config: 
           - { option: -m32, arch: x86 }
           - { option: -m64, arch: x64 }
-        author: [l-smash, Mr-Ojii]
+        author: [l-smash, Mr-Ojii, vimeo]
     
     steps:
     - name: Checkout repository
@@ -109,7 +109,7 @@ jobs:
     
     strategy:
       matrix:
-        author: [l-smash, Mr-Ojii]
+        author: [l-smash, Mr-Ojii, vimeo]
     
     steps:
     - name: Checkout repository
