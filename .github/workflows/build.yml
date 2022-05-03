@@ -39,11 +39,23 @@ jobs:
         mv LICENSE cli
     - name: Install mingw-w64
       run: sudo apt install mingw-w64
+      
+    - name: Build obuparse
+      id: obuparse-rev
+      run: |
+        git clone https://github.com/dwbuiten/obuparse.git --depth 1
+        cd obuparse
+        SHA=`git rev-parse HEAD`
+        echo "::set-output name=REV_SHA::${SHA}"
+        CC=${{ matrix.config.cpu }}-w64-mingw32-gcc make
+        sudo make install
+        
     - name: Build
       run: |
         cd ${{ github.workspace }}/l-smash
         ./configure --cross-prefix=${{ matrix.config.cpu }}-w64-mingw32-
         make
+        
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
@@ -88,6 +100,17 @@ jobs:
       run: |
         sudo apt update
         sudo apt install gcc-multilib
+        
+    - name: Build obuparse
+      id: obuparse-rev
+      run: |
+        git clone https://github.com/dwbuiten/obuparse.git --depth 1
+        cd obuparse
+        SHA=`git rev-parse HEAD`
+        echo "::set-output name=REV_SHA::${SHA}"
+        make
+        sudo make install
+        
     - name: Build
       run: |
         cd ${{ github.workspace }}/l-smash
@@ -130,6 +153,17 @@ jobs:
       run: |
         cd ${{ github.workspace }}/l-smash
         mv LICENSE cli
+        
+    - name: Build obuparse
+      id: obuparse-rev
+      run: |
+        git clone https://github.com/dwbuiten/obuparse.git --depth 1
+        cd obuparse
+        SHA=`git rev-parse HEAD`
+        echo "::set-output name=REV_SHA::${SHA}"
+        make
+        sudo make install
+        
     - name: Build
       run: |
         cd ${{ github.workspace }}/l-smash
