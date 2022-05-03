@@ -16,7 +16,7 @@ jobs:
         config: 
           - { cpu: i686, arch: x86 }
           - { cpu: x86_64, arch: x64 }
-        author: [l-smash, Mr-Ojii, vimeo]
+        author: [l-smash, Mr-Ojii]
     
     steps:
     - name: Checkout repository
@@ -39,16 +39,6 @@ jobs:
         mv LICENSE cli
     - name: Install mingw-w64
       run: sudo apt install mingw-w64
-      
-    - name: Build obuparse
-      id: obuparse-rev
-      run: |
-        git clone https://github.com/dwbuiten/obuparse.git --depth 1
-        cd obuparse
-        SHA=`git rev-parse HEAD`
-        echo "::set-output name=REV_SHA::${SHA}"
-        CC=${{ matrix.config.cpu }}-w64-mingw32-gcc make
-        sudo make install
         
     - name: Build
       run: |
@@ -75,7 +65,7 @@ jobs:
         config: 
           - { option: -m32, arch: x86 }
           - { option: -m64, arch: x64 }
-        author: [l-smash, Mr-Ojii, vimeo]
+        author: [l-smash, Mr-Ojii]
     
     steps:
     - name: Checkout repository
@@ -101,16 +91,6 @@ jobs:
         sudo apt update
         sudo apt install gcc-multilib
         
-    - name: Build obuparse
-      id: obuparse-rev
-      run: |
-        git clone https://github.com/dwbuiten/obuparse.git --depth 1
-        cd obuparse
-        SHA=`git rev-parse HEAD`
-        echo "::set-output name=REV_SHA::${SHA}"
-        make
-        sudo make install
-        
     - name: Build
       run: |
         cd ${{ github.workspace }}/l-smash
@@ -132,7 +112,7 @@ jobs:
     
     strategy:
       matrix:
-        author: [l-smash, Mr-Ojii, vimeo]
+        author: [l-smash, Mr-Ojii]
     
     steps:
     - name: Checkout repository
@@ -153,16 +133,6 @@ jobs:
       run: |
         cd ${{ github.workspace }}/l-smash
         mv LICENSE cli
-        
-    - name: Build obuparse
-      id: obuparse-rev
-      run: |
-        git clone https://github.com/dwbuiten/obuparse.git --depth 1
-        cd obuparse
-        SHA=`git rev-parse HEAD`
-        echo "::set-output name=REV_SHA::${SHA}"
-        make
-        sudo make install
         
     - name: Build
       run: |
