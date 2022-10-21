@@ -20,9 +20,9 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Checkout L-SMASH repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
         repository: ${{ matrix.author }}/l-smash
@@ -52,7 +52,7 @@ jobs:
         zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}_${{ matrix.author }} LICENSE muxer.exe remuxer.exe boxdumper.exe timelineeditor.exe
         
     - name: Upload Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: l-smash
         path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}_${{ matrix.author }}.zip
@@ -69,9 +69,9 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Checkout L-SMASH repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
         repository: ${{ matrix.author }}/l-smash
@@ -102,7 +102,7 @@ jobs:
         zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}_${{ matrix.author }} LICENSE muxer remuxer boxdumper timelineeditor
     
     - name: Upload Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: l-smash
         path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}_${{ matrix.author }}.zip
@@ -116,9 +116,9 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Checkout L-SMASH repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
         repository: ${{ matrix.author }}/l-smash
@@ -144,7 +144,7 @@ jobs:
         zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64_${{ matrix.author }} LICENSE muxer remuxer boxdumper timelineeditor
         
     - name: Upload Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: l-smash
         path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64_${{ matrix.author }}.zip
@@ -156,7 +156,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     
     - uses: actions/download-artifact@v2
       with:
