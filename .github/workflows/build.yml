@@ -155,6 +155,7 @@ jobs:
     - name: Build
       run: |
         cd ${{ github.workspace }}/l-smash
+        
         make
     - name: Create archive
       run: |
