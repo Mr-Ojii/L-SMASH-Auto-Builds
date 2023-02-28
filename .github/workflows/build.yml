@@ -130,7 +130,7 @@ jobs:
     
     strategy:
       matrix:
-        author: [l-smash, Mr-Ojii]
+        author: [l-smash, Mr-Ojii, vimeo]
     
     steps:
     - name: Checkout repository
@@ -152,10 +152,19 @@ jobs:
         cd ${{ github.workspace }}/l-smash
         mv LICENSE cli
         
+    - name: Build obuparse
+      if: ${{ matrix.author == 'vimeo' }}
+      run: |
+        cd ${{ github.workspace }}
+        git clone https://github.com/dwbuiten/obuparse.git
+        cd obuparse
+        gcc -c obuparse.c ${{ matrix.config.option }}
+        ar r libobuparse.a obuparse.o
+        
     - name: Build
       run: |
         cd ${{ github.workspace }}/l-smash
-        
+        ./configure --extra-cflags=-I../obuparse --extra-ldflags=-L../obuparse
         make
     - name: Create archive
       run: |
