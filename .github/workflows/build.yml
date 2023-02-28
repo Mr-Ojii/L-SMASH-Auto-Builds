@@ -107,7 +107,7 @@ jobs:
         git clone https://github.com/dwbuiten/obuparse.git
         cd obuparse
         gcc -c obuparse.c ${{ matrix.config.option }}
-        ar r obuparse.lib obuparse.o
+        ar r libobuparse.a obuparse.o
         
     - name: Build
       run: |
