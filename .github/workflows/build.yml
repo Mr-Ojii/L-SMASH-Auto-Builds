@@ -53,7 +53,7 @@ jobs:
       run: |
         cd ${{ github.workspace }}/l-smash
         ./configure --cross-prefix=${{ matrix.config.cpu }}-w64-mingw32- --extra-cflags=-I../obuparse --extra-ldflags=-L../obuparse
-        make
+        make -j$(nproc)
         
     - name: Create archive
       run: |
@@ -104,7 +104,7 @@ jobs:
       run: |
         cd ${{ github.workspace }}/l-smash
         ./configure --extra-cflags=${{ matrix.config.option }}
-        make
+        make -j$(nproc)
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
