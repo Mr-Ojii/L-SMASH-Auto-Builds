@@ -74,7 +74,7 @@ jobs:
         config: 
           - { option: -m32, arch: x86 }
           - { option: -m64, arch: x64 }
-        author: [l-smash, Mr-Ojii]
+        author: [l-smash, Mr-Ojii, vimeo]
     
     steps:
     - name: Checkout repository
@@ -100,10 +100,19 @@ jobs:
         sudo apt update
         sudo apt install gcc-multilib
         
+    - name: Build obuparse
+      if: ${{ matrix.author == 'vimeo' }}
+      run: |
+        cd ${{ github.workspace }}
+        git clone https://github.com/dwbuiten/obuparse.git
+        cd obuparse
+        gcc -c obuparse.c ${{ matrix.config.option }}
+        ar r obuparse.lib obuparse.o
+        
     - name: Build
       run: |
         cd ${{ github.workspace }}/l-smash
-        ./configure --extra-cflags=${{ matrix.config.option }}
+        ./configure --extra-cflags="-I../obuparse ${{ matrix.config.option }}" --extra-ldflags=-L../obuparse
         make -j$(nproc)
     - name: Create archive
       run: |
