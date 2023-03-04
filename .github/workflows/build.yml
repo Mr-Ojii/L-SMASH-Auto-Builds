@@ -41,7 +41,6 @@ jobs:
       run: sudo apt install mingw-w64
       
     - name: Build obuparse
-      if: ${{ matrix.author == 'vimeo' }}
       run: |
         cd ${{ github.workspace }}
         git clone https://github.com/dwbuiten/obuparse.git
@@ -101,7 +100,6 @@ jobs:
         sudo apt install gcc-multilib
         
     - name: Build obuparse
-      if: ${{ matrix.author == 'vimeo' }}
       run: |
         cd ${{ github.workspace }}
         git clone https://github.com/dwbuiten/obuparse.git
@@ -153,7 +151,6 @@ jobs:
         mv LICENSE cli
         
     - name: Build obuparse
-      if: ${{ matrix.author == 'vimeo' }}
       run: |
         cd ${{ github.workspace }}
         git clone https://github.com/dwbuiten/obuparse.git
