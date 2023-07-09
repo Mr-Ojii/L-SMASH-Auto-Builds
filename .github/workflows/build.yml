@@ -206,3 +206,9 @@ jobs:
           assets+=("-a" "$asset")
         done
         hub release create "${assets[@]}" -m "$RELEASE_NAME" "$TAG_NAME"
+        
+    - uses: dev-drprasad/delete-older-releases@v0.2
+      with:
+        keep_latest: 20
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
