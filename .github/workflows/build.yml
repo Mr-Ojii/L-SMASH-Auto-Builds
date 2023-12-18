@@ -63,7 +63,7 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: l-smash
+        name: l-smash-win-${{ matrix.config.arch }}-${{ matrix.author }}
         path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}_${{ matrix.author }}.zip
     
   linux-build:
@@ -121,7 +121,7 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: l-smash
+        name: l-smash-linux-${{ matrix.config.arch }}-${{ matrix.author }}
         path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}_${{ matrix.author }}.zip
 
   mac-build:
@@ -172,7 +172,7 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: l-smash
+        name: l-smash-mac-${{ matrix.author }}
         path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64_${{ matrix.author }}.zip
       
       
@@ -186,7 +186,6 @@ jobs:
     
     - uses: actions/download-artifact@v4
       with:
-        name: l-smash
         path: artifacts
     
     - name: Get Date
@@ -202,7 +201,7 @@ jobs:
       run: |
         RELEASE_NAME=Build-${{ steps.get_date.outputs.DATE_TIME }}
         TAG_NAME=build-${{ steps.get_date.outputs.DATE_TIME }}
-        gh release create "${TAG_NAME}" ${{ github.workspace }}/artifacts/*.zip -t "${RELEASE_NAME}" 
+        gh release create "${TAG_NAME}" ${{ github.workspace }}/artifacts/*/*.zip -t "${RELEASE_NAME}" 
         
     - uses: dev-drprasad/delete-older-releases@v0.3.2
       with:
