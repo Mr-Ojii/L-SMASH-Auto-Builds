@@ -8,7 +8,7 @@ updates:
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       timezone: "Asia/Tokyo"
     # https://sue445.hatenablog.com/entry/2023/12/15/230043
     groups:
