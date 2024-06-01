@@ -203,7 +203,7 @@ jobs:
         TAG_NAME=build-${{ steps.get_date.outputs.DATE_TIME }}
         gh release create "${TAG_NAME}" ${{ github.workspace }}/artifacts/*/*.zip -t "${RELEASE_NAME}" 
         
-    - uses: dev-drprasad/delete-older-releases@v0.3.3
+    - uses: dev-drprasad/delete-older-releases@v0.3.4
       with:
         keep_latest: 20
       env:
