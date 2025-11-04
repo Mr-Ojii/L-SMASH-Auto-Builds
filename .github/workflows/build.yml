@@ -167,13 +167,13 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64_${{ matrix.author }} LICENSE muxer remuxer boxdumper timelineeditor
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_arm64_${{ matrix.author }} LICENSE muxer remuxer boxdumper timelineeditor
         
     - name: Upload Artifact
       uses: actions/upload-artifact@v5
       with:
         name: l-smash-mac-${{ matrix.author }}
-        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_x64_${{ matrix.author }}.zip
+        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_arm64_${{ matrix.author }}.zip
       
       
   create_release:
