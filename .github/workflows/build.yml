@@ -17,7 +17,11 @@ jobs:
         config: 
           - { cpu: i686, arch: x86 }
           - { cpu: x86_64, arch: x64 }
-        author: [l-smash, Mr-Ojii, vimeo]
+        source:
+          - { author: l-smash, branch: master }
+          - { author: l-smash, branch: dev, suffix: _dev }
+          - { author: Mr-Ojii, branch: master }
+          - { author: vimeo, branch: master }
     
     steps:
     - name: Checkout repository
@@ -26,7 +30,8 @@ jobs:
       uses: actions/checkout@v7
       with:
         fetch-depth: 0
-        repository: ${{ matrix.author }}/l-smash
+        repository: ${{ matrix.source.author }}/l-smash
+        ref: ${{ matrix.source.branch }}
         path: l-smash
     - name: Set REV_LIST_COUNT
       id: rev
@@ -58,13 +63,13 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}_${{ matrix.author }} LICENSE muxer.exe remuxer.exe boxdumper.exe timelineeditor.exe
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip LICENSE muxer.exe remuxer.exe boxdumper.exe timelineeditor.exe
         
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
-        name: l-smash-win-${{ matrix.config.arch }}-${{ matrix.author }}
-        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}_${{ matrix.author }}.zip
+        name: l-smash-win-${{ matrix.config.arch }}-${{ matrix.source.author }}${{ matrix.source.suffix }}
+        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip
     
   linux-build:
     runs-on: ubuntu-latest
@@ -74,7 +79,11 @@ jobs:
         config: 
           - { option: -m32, arch: x86 }
           - { option: -m64, arch: x64 }
-        author: [l-smash, Mr-Ojii, vimeo]
+        source:
+          - { author: l-smash, branch: master }
+          - { author: l-smash, branch: dev, suffix: _dev }
+          - { author: Mr-Ojii, branch: master }
+          - { author: vimeo, branch: master }
     
     steps:
     - name: Checkout repository
@@ -83,7 +92,8 @@ jobs:
       uses: actions/checkout@v7
       with:
         fetch-depth: 0
-        repository: ${{ matrix.author }}/l-smash
+        repository: ${{ matrix.source.author }}/l-smash
+        ref: ${{ matrix.source.branch }}
         path: l-smash
     - name: Set REV_LIST_COUNT
       id: rev
@@ -116,20 +126,24 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}_${{ matrix.author }} LICENSE muxer remuxer boxdumper timelineeditor
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip LICENSE muxer remuxer boxdumper timelineeditor
     
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
-        name: l-smash-linux-${{ matrix.config.arch }}-${{ matrix.author }}
-        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}_${{ matrix.author }}.zip
+        name: l-smash-linux-${{ matrix.config.arch }}-${{ matrix.source.author }}${{ matrix.source.suffix }}
+        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip
 
   mac-build:
     runs-on: macos-latest
     
     strategy:
       matrix:
-        author: [l-smash, Mr-Ojii, vimeo]
+        source:
+          - { author: l-smash, branch: master }
+          - { author: l-smash, branch: dev, suffix: _dev }
+          - { author: Mr-Ojii, branch: master }
+          - { author: vimeo, branch: master }
     
     steps:
     - name: Checkout repository
@@ -138,7 +152,8 @@ jobs:
       uses: actions/checkout@v7
       with:
         fetch-depth: 0
-        repository: ${{ matrix.author }}/l-smash
+        repository: ${{ matrix.source.author }}/l-smash
+        ref: ${{ matrix.source.branch }}
         path: l-smash
     - name: Set REV_LIST_COUNT
       id: rev
@@ -167,13 +182,13 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_arm64_${{ matrix.author }} LICENSE muxer remuxer boxdumper timelineeditor
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_arm64_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip LICENSE muxer remuxer boxdumper timelineeditor
         
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
-        name: l-smash-mac-${{ matrix.author }}
-        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_arm64_${{ matrix.author }}.zip
+        name: l-smash-mac-${{ matrix.source.author }}${{ matrix.source.suffix }}
+        path: ${{ github.workspace }}/l-smash/cli/L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_arm64_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip
       
       
   create_release:
