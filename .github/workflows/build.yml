@@ -63,7 +63,7 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip LICENSE muxer.exe remuxer.exe boxdumper.exe timelineeditor.exe
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_win_${{ matrix.config.arch }}_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip LICENSE lshmuxer.exe muxer.exe remuxer.exe boxdumper.exe timelineeditor.exe
         
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
@@ -126,7 +126,7 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip LICENSE muxer remuxer boxdumper timelineeditor
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_linux_${{ matrix.config.arch }}_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip LICENSE lshmuxer muxer remuxer boxdumper timelineeditor
     
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
@@ -182,7 +182,7 @@ jobs:
     - name: Create archive
       run: |
         cd ${{ github.workspace }}/l-smash/cli
-        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_arm64_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip LICENSE muxer remuxer boxdumper timelineeditor
+        zip L-SMASH_rev${{ steps.rev.outputs.REV_LIST_COUNT }}_macos_arm64_${{ matrix.source.author }}${{ matrix.source.suffix }}.zip LICENSE lshmuxer muxer remuxer boxdumper timelineeditor
         
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
